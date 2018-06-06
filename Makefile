@@ -1,7 +1,7 @@
 obj-m += driver.o
 
 all:
-	 make -C /lib/modules/4.4.0-81-generic/build M=$(PWD) modules
+	 make -C /lib/modules/$(uname -r)/build M=$(PWD) modules
 
 clean: 
-	make -C /lib/modules/4.4.0-81-generic/build M=$(PWD) clean
+	make -C /lib/modules/$(uname -r)/build M=$(PWD) clean
