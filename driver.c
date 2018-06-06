@@ -24,7 +24,7 @@ static ssize_t my_write(struct file *file1,const char *buffer,size_t count,loff_
     if( count > sizeof(command)-1 )
         count = sizeof(command)-1;
 
-    ret = raw_copy_from_user( command, buffer, count );
+    ret = copy_from_user( command, buffer, count );
     if( ret != 0 )
         return -EINVAL;
     
@@ -58,7 +58,7 @@ static ssize_t my_read(struct file *file1, char *buffer,size_t count,loff_t *off
     if( count > strlen(response) )
         count = strlen(response);
 
-    ret = raw_copy_to_user( buffer, response, strlen(response) );
+    ret = copy_to_user( buffer, response, strlen(response) );
     if( ret != 0 )
         return -EINVAL;
 
@@ -75,6 +75,7 @@ static struct file_operations my_fops=
 
 static int __init my_init(void)
 {
+	int rc;
     if(alloc_chrdev_region (&first,0,1,"my_device") < 0)
     {
         printk("can't register...\n");
@@ -108,12 +109,12 @@ static int __init my_init(void)
 //////////////////////////////////////////////////////////
 /* init GPIO						*/
 //////////////////////////////////////////////////////////
-	int rc;
+	
 	if(rc = gpio_request(my_LED, "my led")<0){
 		printk("request LED be fales...\n");
 		return -1;
 	}
-	if(re = gpio_direction_output(my_LED,0)<0){
+	if(rc = gpio_direction_output(my_LED,0)<0){
 		printk("can't set gpio 102 as output...\n");
 		return -1;
 	}
